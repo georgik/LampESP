@@ -5,6 +5,7 @@ void setup() {
   delay(10);
 
   setupRelay();
+  setupPIR();
   setupWifi();
   setupOTA();
   setupWebServer();
@@ -14,6 +15,7 @@ void setup() {
 void loop() {
   handleOTA();
   checkMQTTConnection();
+  handlePIR();
   handleWebServer();
   handleMQTT();
 }
