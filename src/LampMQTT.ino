@@ -60,11 +60,22 @@ void reconnect() {
   }
 }
 
+void sendMessage(const char* topic, float value) {
+  static char buff[16];
+  String(value).toCharArray(buff, 15);
+  sendMessage(topic, buff);
+}
+
+void sendMessage(const char* topic, const char* value) {
+  if(!mqttClient.connected()) {
+    return;
+  }
+  mqttClient.publish(topicName(topic), value);
+}
 
 void setupMQTT() {
   mqttClient.setServer(getMqttHost(), getMqttPort());
   mqttClient.setCallback(callback);
-
 }
 
 void handleMQTT() {

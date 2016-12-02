@@ -20,6 +20,10 @@ Connect to MQTT broker - send status and receive commands.
 
 Push new version to device over WiFi.
 
+## DHT sensor
+
+Meassure temperature and humidity.
+
 ## PIR sensor
 
 Detect motion and change state of on-board led.
