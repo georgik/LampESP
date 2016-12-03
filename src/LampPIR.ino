@@ -23,6 +23,7 @@ void handlePIR() {
     if (PIRState == HIGH) {
       Serial.println("PIR HIGH");
       redLED();
+      turnOnLED();
       pirCountdown = 6;
       sendMessage("pir", "high");
     } else {
@@ -35,5 +36,8 @@ void handlePIR() {
   if ((pirCountdown > 0) && (PIRState == LOW)) {
     pirCountdown--;
     setColor(pirCountdown);
+    if (pirCountdown == 0) {
+      turnOffLED();
+    }
   }
 }

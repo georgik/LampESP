@@ -12,9 +12,13 @@ More information about the project:
 
 # Features
 
+## Air quality sensor
+
+Read value from A0 and send it to server.
+
 ## MQTT Client
 
-Connect to MQTT broker - send status and receive commands.
+Connects to MQTT broker - send status and receive commands.
 
 ## Over the air update - OTA
 
@@ -37,7 +41,7 @@ Receive MQTT command and change state of relay.
 ## RGB LED
 
 RGB LED indicates detection of motion based on PIR.
-If no motion was detected then it counts down and display further colors
+If no motion was detected then it counts down and display further colors.
 
 Schema: http://www.esp8266learning.com/wemos-rgb-led-example.php
 

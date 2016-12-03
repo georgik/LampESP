@@ -1,5 +1,5 @@
 int redPin = D2;
-int greenPin = D1;
+int greenPin = D5;
 int bluePin = D3;
 
 void setupRGBLED() {
@@ -60,4 +60,5 @@ void setColor(int state) {
       turnOffRGBLED();
       break;
     }
+  }
 }

@@ -16,6 +16,8 @@ void setup() {
   setupMQTT();
   setupPIR();
   setupDHT();
+  setupLED();
+  // setupAirSensor();
 }
 
 void loop() {
