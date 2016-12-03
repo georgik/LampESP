@@ -4,11 +4,9 @@ int pirPin = D7;
 bool lastPIRState = LOW;
 bool PIRState = LOW;
 Task* pirTask;
+int pirCountdown = 0;
 
 void setupPIR() {
-  pinMode(BUILTIN_LED, OUTPUT);
-  digitalWrite(BUILTIN_LED, HIGH );
-
   pirTask = new Task(1000, TASK_FOREVER, &handlePIR);
   runner.addTask(*pirTask);
   pirTask->enable();
@@ -24,12 +22,18 @@ void handlePIR() {
     lastPIRState = PIRState;
     if (PIRState == HIGH) {
       Serial.println("PIR HIGH");
-      digitalWrite(BUILTIN_LED, LOW );
-      sendMessage("pir", "low");
+      redLED();
+      pirCountdown = 6;
+      sendMessage("pir", "high");
     } else {
       Serial.println("PIR LOW");
-      digitalWrite(BUILTIN_LED, HIGH );
-      sendMessage("pir", "high");
+      greenLED();
+      sendMessage("pir", "low");
     }
+  }
+
+  if ((pirCountdown > 0) && (PIRState == LOW)) {
+    pirCountdown--;
+    setColor(pirCountdown);
   }
 }

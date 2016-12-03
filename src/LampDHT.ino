@@ -52,7 +52,10 @@ void setupDHT() {
   dht = new DHT(D4, DHT22);
   dht->begin();
 
-  dhtTask = new Task(5000, TASK_FOREVER, &logDHTMeasurement);
+  // Meassure once per minute. It seems that 5 second measurement is heating up
+  // DHT module about 0.1C per 20 seconds and could reach about 2C higher
+  // temperature than should be meassured
+  dhtTask = new Task(60000, TASK_FOREVER, &logDHTMeasurement);
   runner.addTask(*dhtTask);
   dhtTask->enable();
 }

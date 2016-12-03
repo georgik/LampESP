@@ -9,6 +9,7 @@ void setup() {
   runner.init();
 
   setupRelay();
+  setupRGBLED();
   setupWifi();
   setupOTA();
   setupWebServer();

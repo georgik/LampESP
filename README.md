@@ -24,6 +24,8 @@ Push new version to device over WiFi.
 
 Meassure temperature and humidity.
 
+Schema: http://www.esp8266learning.com/wemos-mini-pir-sensor-example.php
+
 ## PIR sensor
 
 Detect motion and change state of on-board led.
@@ -31,6 +33,13 @@ Detect motion and change state of on-board led.
 ## Relay control
 
 Receive MQTT command and change state of relay.
+
+## RGB LED
+
+RGB LED indicates detection of motion based on PIR.
+If no motion was detected then it counts down and display further colors
+
+Schema: http://www.esp8266learning.com/wemos-rgb-led-example.php
 
 ## Web server
 
