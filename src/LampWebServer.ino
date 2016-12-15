@@ -17,6 +17,8 @@ void setupWebServer() {
 
 
   server->on("/", handleRoot);
+  server->on("/config", handleConfig);
+  server->on("/reboot", handleReboot);
   server->on("/relay=on", handleRelayOn);
   server->on("/relay=off", handleRelayOff);
   server->on("/inline", [](){
@@ -29,6 +31,11 @@ void setupWebServer() {
 
 }
 
+void handleReboot() {
+    String message = "Rebooting...";
+    server->send(200, "text/html", message);
+    ESP.reset();
+}
 
 void handleNotFound(){
   String message = "File Not Found\n\n";
@@ -43,6 +50,16 @@ void handleNotFound(){
     message += " " + server->argName(i) + ": " + server->arg(i) + "\n";
   }
   server->send(404, "text/plain", message);
+}
+
+void handleConfig() {
+  String message = "Configuration\n\n";
+  for (uint8_t i=0; i<server->args(); i++){
+    message += " " + server->argName(i) + ": " + server->arg(i) + "\n";
+    setConfigValue(server->argName(i), server->arg(i));
+  }
+  saveConfig();
+  server->send(200, "text/html", message);
 }
 
 
@@ -67,9 +84,27 @@ void handleRoot() {
   } else {
     message += "<a class=\"btn btn-primary btn-lg active\" href=\"/relay=on\">Relay ON</a> ";
   }
-  message += "</html>";
 
-  mqttClient.publish(topicName("status"), "response");
+  message += "<h2>Info</h2><ul>";
+  message += "<li>Host: ";
+  message += getHostname();
+  message += "</li>";
+  message += "<li>MQTT status: ";
+  if (mqttClient.connected()) {
+    message += "connected";
+  } else {
+    message += "disconnected";
+  }
+  message += "</li>";
+
+  message += "<li>MQTT host: " + String(getMqttHost()) + "</li>";
+  message += "<li>PIR Countdown: " + String(pirCountdown) +"</li>";
+  message += "<li>Photocell value: " + String(getPhotocellValue()) + "</li>";
+  message += "<li>Temperature: " + String(getTemperature()) + "</li>";
+  message += "<li>Humidity: " + String(getHumidity()) + "</li>";
+
+  message += "</ul></html>";
+
   server->send(200, "text/html", message);
 }
 

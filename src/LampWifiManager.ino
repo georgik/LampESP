@@ -38,6 +38,19 @@ const char* getMqttPortAsString() {
   return configMqttPort;
 }
 
+void setConfigValue(String key, String value) {
+  int valueLength = value.length()+1;
+  if (key == "mqtt_host") {
+    value.toCharArray(configMqttHost, valueLength);
+  } else if (key == "mqtt_port") {
+    value.toCharArray(configMqttPort, valueLength);
+  } else if (key == "mqtt_parent_topic") {
+    value.toCharArray(configMqttParentTopic, valueLength);
+  } else if (key == "hostname") {
+    value.toCharArray(configDeviceHostname, valueLength);
+  }
+}
+
 void setDefaultConfig() {
   strcpy(configMqttHost, "iot.sinusgear.com");
   strcpy(configMqttPort, "1883");
@@ -45,7 +58,7 @@ void setDefaultConfig() {
   strcpy(configDeviceHostname, "esp8266");
 }
 
-void setupWifi() {
+void setupWifi(int portalConfigTimeout) {
   Serial.println("mounting FS...");
 
   if (SPIFFS.begin()) {
@@ -93,7 +106,7 @@ void setupWifi() {
   wifiManager.addParameter(&custom_mqtt_parent_topic);
   wifiManager.addParameter(&custom_hostname);
 
-  wifiManager.setConfigPortalTimeout(60);
+  wifiManager.setConfigPortalTimeout(portalConfigTimeout);
   wifiManager.setSaveConfigCallback(saveConfigCallback);
   wifiManager.autoConnect();
 

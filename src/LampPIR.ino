@@ -9,7 +9,16 @@ int pirCountdown = 0;
 void setupPIR() {
   pirTask = new Task(1000, TASK_FOREVER, &handlePIR);
   runner.addTask(*pirTask);
+  turnOnPIR();
+}
+
+void turnOnPIR() {
+  pirCountdown = 0;
   pirTask->enable();
+}
+
+void turnOffPIR() {
+  pirTask->disable();
 }
 
 bool isPIRHigh() {
@@ -18,26 +27,37 @@ bool isPIRHigh() {
 
 void handlePIR() {
   PIRState = digitalRead(pirPin);
+
   if (PIRState != lastPIRState) {
     lastPIRState = PIRState;
+
     if (PIRState == HIGH) {
-      Serial.println("PIR HIGH");
-      redLED();
-      turnOnLED();
-      pirCountdown = 6;
-      sendMessage("pir", "high");
-    } else {
-      Serial.println("PIR LOW");
-      greenLED();
-      sendMessage("pir", "low");
+      if ((isPhotocellBelowTreshold()) && (!isDayligh)) {
+        if (pirCountdown <= 0) {
+          turnOnLED();
+          sendMessage("pir", "high");
+          Serial.println("PIR HIGH");
+        }
+
+        // Half minute to turn off the light
+        pirCountdown = 30;
+        // pirCountdown = 10*60;
+      }
     }
   }
 
-  if ((pirCountdown > 0) && (PIRState == LOW)) {
+  if (pirCountdown > 0) {
     pirCountdown--;
-    setColor(pirCountdown);
-    if (pirCountdown == 0) {
-      turnOffLED();
+    if (isPhotocellAboveTreshold()) {
+      pirCountdown = 0;
     }
   }
+
+  if (pirCountdown == 0) {
+    pirCountdown--;
+    turnOffLED();
+    Serial.println("PIR LOW");
+    sendMessage("pir", "low");
+  }
+
 }

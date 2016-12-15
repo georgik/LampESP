@@ -9,15 +9,19 @@ void setup() {
   runner.init();
 
   setupRelay();
-  setupRGBLED();
-  setupWifi();
+  // true - to enable functionality
+  setupRGBLED(false);
+
+  setupWifi(60);
   setupOTA();
   setupWebServer();
   setupMQTT();
-  setupPIR();
   setupDHT();
   setupLED();
-  // setupAirSensor();
+  setupPIR();
+
+  // true - to enable functionality
+  setupAirSensor(false);
 }
 
 void loop() {

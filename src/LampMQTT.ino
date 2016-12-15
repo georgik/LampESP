@@ -9,31 +9,53 @@ static char* _topicName(char *name)
   return buff;
 }
 
+#define topic(a,b) _topic((char*)a, (char*) b)
+static char* _topic(char *group, char *name)
+{
+  static char buff[128];
+  sprintf(buff, "/%s/%s/%s", getMqttParentTopic(), group, name);
+  return buff;
+}
+
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
+bool isDayligh = false;
 
 
-static void callback(char* topic, byte* payload, unsigned int length) {
+static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
+  String topic = topicChar;
+
+  char buf[161];
+  if (length > 160) {
+    length = 160;
+  }
+  snprintf(buf, length + 1, "%s", payloadByte);
+
+  String payload = String((char *)buf);
+
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] (");
   Serial.print(length);
   Serial.print(") ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
+  Serial.print(payload);
   Serial.println();
 
-  // commands: on, off, toggle
-  if (length > 1) {
-    if ((char)payload[0] == 'o') {
-      if ((char)payload[1]== 'n') {
-        setRelay(HIGH);
-      } else {
-        setRelay(LOW);
-      }
+  if (topic.endsWith("daylight")) {
+    if (payload == "true") {
+      isDayligh = true;
+      // turnOffPIR();
+      turnOffLED();
+    } else {
+      isDayligh = false;
+      // turnOnPIR();
     }
-    else if ((char)payload[0] == 't') {
+  } else if (topic.endsWith("command")) {
+    if (payload == "on") {
+      setRelay(HIGH);
+    } else if (payload == "off") {
+      setRelay(LOW);
+    } else if (payload == "toggle") {
       if (getRelay() == HIGH) {
         setRelay(LOW);
       } else {
@@ -43,20 +65,23 @@ static void callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
+unsigned long waitForReconnectTime = 0;
+
 void reconnect() {
 
-  while (!mqttClient.connected()) {
+  if (waitForReconnectTime < millis()) {
     Serial.print("Attempting MQTT connection...");
 
     if (mqttClient.connect(getHostname())) {
       Serial.println("connected");
       mqttClient.publish(topicName("status"), "online");
       mqttClient.subscribe(topicName("command"));
+      mqttClient.subscribe(topic("info", "daylight"));
     } else {
       Serial.println("failed");
-      // Wait 5 seconds before retrying
-      delay(2000);
     }
+    // Any retry should occure in 5 seconds
+    waitForReconnectTime = millis() + 5000;
   }
 }
 

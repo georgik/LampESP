@@ -8,6 +8,7 @@ bool isFahrenheit = false;
 float lastHumidity = 0;
 float lastTemperature = 0;
 float lastHeat = 0;
+int dhtFailCounter = 0;
 
 void logDHTMeasurement() {
   float h = dht->readHumidity();
@@ -17,11 +18,13 @@ void logDHTMeasurement() {
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t)) {
     Serial.println("Failed to read from DHT sensor!");
+    dhtFailCounter++;
+    if (dhtFailCounter == 3) {
+      dhtTask->disable();
+      dhtFailCounter = 0;
+    }
     return;
   }
-
-  // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dht->computeHeatIndex(t, h, isFahrenheit);
 
   // Send value only when it changed
   if (lastTemperature != t) {
@@ -38,14 +41,6 @@ void logDHTMeasurement() {
     Serial.println(h);
     sendMessage("humidity", h);
   }
-
-  if (lastHeat != hic) {
-    lastHeat = hic;
-    Serial.print("Heat index: ");
-    Serial.print(hic);
-    Serial.println(" *C");
-    sendMessage("heat", hic);
-  }
 }
 
 void setupDHT() {
@@ -58,6 +53,14 @@ void setupDHT() {
   dhtTask = new Task(60000, TASK_FOREVER, &logDHTMeasurement);
   runner.addTask(*dhtTask);
   dhtTask->enable();
+}
+
+float getTemperature() {
+  return lastTemperature;
+}
+
+float getHumidity() {
+  return lastHumidity;
 }
 
 void handleDHT() {

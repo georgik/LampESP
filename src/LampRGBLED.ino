@@ -2,7 +2,13 @@ int redPin = D2;
 int greenPin = D5;
 int bluePin = D3;
 
-void setupRGBLED() {
+bool isRGBLEDEnabled = false;
+
+void setupRGBLED(bool isEnabled) {
+  isEnabled = isRGBLEDEnabled;
+  if (!isRGBLEDEnabled) {
+    return;
+  }
   pinMode(redPin, OUTPUT);
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
@@ -10,33 +16,32 @@ void setupRGBLED() {
 }
 
 void turnOffRGBLED() {
-  digitalWrite(redPin, HIGH);
-  digitalWrite(greenPin, HIGH);
-  digitalWrite(bluePin, HIGH);
+  setRGBLED(HIGH, HIGH, HIGH);
 }
 
 void greenLED() {
-  digitalWrite(redPin, HIGH);
-  digitalWrite(greenPin, LOW);
-  digitalWrite(bluePin, HIGH);
+  setRGBLED(HIGH, LOW, HIGH);
 }
 
 void orangeLED() {
-  digitalWrite(redPin, LOW);
-  digitalWrite(greenPin, LOW);
-  digitalWrite(bluePin, HIGH);
+  setRGBLED(LOW, LOW, HIGH);
 }
 
 void blueLED() {
-  digitalWrite(redPin, HIGH);
-  digitalWrite(greenPin, HIGH);
-  digitalWrite(bluePin, LOW);
+  setRGBLED(HIGH, HIGH, LOW);
 }
 
 void redLED() {
-  digitalWrite(redPin, LOW);
-  digitalWrite(greenPin, HIGH);
-  digitalWrite(bluePin, HIGH);
+  setRGBLED(LOW, HIGH, HIGH);
+}
+
+void setRGBLED(bool redValue, bool greenValue, bool blueValue) {
+  if (!isRGBLEDEnabled) {
+    return;
+  }
+  digitalWrite(redPin, redValue);
+  digitalWrite(greenPin, greenValue);
+  digitalWrite(bluePin, blueValue);
 }
 
 void setColor(int state) {
