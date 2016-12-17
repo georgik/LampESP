@@ -66,6 +66,7 @@ void handleConfig() {
 void handleRoot() {
   String message = "<!DOCTYPE html>";
   message += "<html lang='en'>";
+  message += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head><body>";
   message += "<link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u\" crossorigin=\"anonymous\">";
 
   message += "<h2>Lamp is now: ";
@@ -103,7 +104,7 @@ void handleRoot() {
   message += "<li>Temperature: " + String(getTemperature()) + " (applied correction: " + String(getTemperatureCorrection()) + ")</li>";
   message += "<li>Humidity: " + String(getHumidity()) + "</li>";
 
-  message += "</ul></html>";
+  message += "</ul></body></html>";
 
   server->send(200, "text/html", message);
 }
