@@ -6,6 +6,7 @@ char configMqttHost[40];
 char configMqttPort[6];
 char configMqttParentTopic[40];
 char configDeviceHostname[40];
+char configTemperatureCorrection[6];
 
 WiFiManager wifiManager;
 
@@ -34,6 +35,10 @@ int getMqttPort() {
   return String(configMqttPort).toInt();
 }
 
+float getTemperatureCorrection() {
+  return String(configTemperatureCorrection).toFloat();
+}
+
 const char* getMqttPortAsString() {
   return configMqttPort;
 }
@@ -48,6 +53,8 @@ void setConfigValue(String key, String value) {
     value.toCharArray(configMqttParentTopic, valueLength);
   } else if (key == "hostname") {
     value.toCharArray(configDeviceHostname, valueLength);
+  } else if (key == "temperature_correction") {
+    value.toCharArray(configTemperatureCorrection, valueLength);
   }
 }
 
@@ -56,9 +63,32 @@ void setDefaultConfig() {
   strcpy(configMqttPort, "1883");
   strcpy(configMqttParentTopic, "home");
   strcpy(configDeviceHostname, "esp8266");
+  strcpy(configTemperatureCorrection, "0");
+}
+
+void printMacAddress() {
+  uint8_t MAC_array[6];
+
+  WiFi.macAddress(MAC_array);
+  Serial.println("");
+  Serial.print("MAC address: ");
+  for (int i = 0; i < sizeof(MAC_array); ++i) {
+    if (MAC_array[i]<16) {
+      Serial.print("0");
+    }
+    Serial.print(String(MAC_array[i], HEX));
+    Serial.print(":");
+  }
+
+  Serial.println("");
 }
 
 void setupWifi(int portalConfigTimeout) {
+
+  printMacAddress();
+
+  WiFi.mode(WIFI_STA); // Force to station mode because if device was switched off while in access point mode it will start up next time in access point mode.
+
   Serial.println("mounting FS...");
 
   if (SPIFFS.begin()) {
@@ -84,6 +114,9 @@ void setupWifi(int portalConfigTimeout) {
           strcpy(configMqttPort, json["mqtt_port"]);
           strcpy(configMqttParentTopic, json["mqtt_parent_topic"]);
           strcpy(configDeviceHostname, json["hostname"]);
+          if (json.containsKey("temperature_correction")) {
+            strcpy(configTemperatureCorrection, json["temperature_correction"]);
+          }
 
         } else {
           Serial.println("failed to load json config");
@@ -133,6 +166,7 @@ void saveConfig() {
   json["mqtt_port"] = getMqttPortAsString();
   json["mqtt_parent_topic"] = getMqttParentTopic();
   json["hostname"] = getHostname();
+  json["temperature_correction"] = String(getTemperatureCorrection());
 
   File configFile = SPIFFS.open("/config.json", "w");
   if (!configFile) {

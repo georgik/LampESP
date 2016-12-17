@@ -9,11 +9,12 @@ float lastHumidity = 0;
 float lastTemperature = 0;
 float lastHeat = 0;
 int dhtFailCounter = 0;
+float temperatureCorrection = 0;
 
 void logDHTMeasurement() {
   float h = dht->readHumidity();
   // Read temperature as Celsius (the default)
-  float t = dht->readTemperature(isFahrenheit);
+  float t = dht->readTemperature(isFahrenheit) + temperatureCorrection;
 
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t)) {
@@ -44,6 +45,8 @@ void logDHTMeasurement() {
 }
 
 void setupDHT() {
+  temperatureCorrection = getTemperatureCorrection();
+
   dht = new DHT(D4, DHT22);
   dht->begin();
 

@@ -86,9 +86,9 @@ void handleRoot() {
   }
 
   message += "<h2>Info</h2><ul>";
-  message += "<li>Host: ";
-  message += getHostname();
-  message += "</li>";
+  message += "<li>Host: " + String(getHostname()) + "</li>";
+  message += "<li>Signal strength: " + String(WiFi.RSSI()) + " dB</li>";
+
   message += "<li>MQTT status: ";
   if (mqttClient.connected()) {
     message += "connected";
@@ -98,9 +98,9 @@ void handleRoot() {
   message += "</li>";
 
   message += "<li>MQTT host: " + String(getMqttHost()) + "</li>";
-  message += "<li>PIR Countdown: " + String(pirCountdown) +"</li>";
+  message += "<li>PIR Countdown: " + String(pirCountdown) +"s </li>";
   message += "<li>Photocell value: " + String(getPhotocellValue()) + "</li>";
-  message += "<li>Temperature: " + String(getTemperature()) + "</li>";
+  message += "<li>Temperature: " + String(getTemperature()) + " (applied correction: " + String(getTemperatureCorrection()) + ")</li>";
   message += "<li>Humidity: " + String(getHumidity()) + "</li>";
 
   message += "</ul></html>";
