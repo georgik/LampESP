@@ -66,10 +66,10 @@ void handleConfig() {
 void handleRoot() {
   String message = "<!DOCTYPE html>";
   message += "<html lang='en'>";
-  message += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head><body>";
+  message += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
   message += "<link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u\" crossorigin=\"anonymous\">";
 
-  message += "<h2>Lamp is now: ";
+  message += "<body><h2>Lamp is now: ";
 
   int relayState = getRelay();
   if(relayState == HIGH) {
@@ -100,7 +100,7 @@ void handleRoot() {
 
   message += "<li>MQTT host: " + String(getMqttHost()) + "</li>";
   message += "<li>PIR Countdown: " + String(pirCountdown) +"s </li>";
-  message += "<li>Photocell value: " + String(getPhotocellValue()) + "</li>";
+  message += "<li>Photocell value: " + String(getPhotocellValue()) + " (threshold: " + String(getPhotocellThreshold())+ ")</li>";
   message += "<li>Temperature: " + String(getTemperature()) + " (applied correction: " + String(getTemperatureCorrection()) + ")</li>";
   message += "<li>Humidity: " + String(getHumidity()) + "</li>";
 

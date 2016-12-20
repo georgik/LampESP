@@ -1,8 +1,9 @@
 
 int photocellPin = A0;
-int photocellTreshold = 220;
+int photocellThreshold = 220;
 
 void setupPhotocell() {
+  photocellThreshold = getPhotocellThreshold();
 }
 
 unsigned int getPhotocellValue() {
@@ -10,9 +11,9 @@ unsigned int getPhotocellValue() {
 }
 
 bool isPhotocellAboveTreshold() {
-  return getPhotocellValue() >= photocellTreshold;
+  return getPhotocellValue() >= photocellThreshold;
 }
 
 bool isPhotocellBelowTreshold() {
-  return getPhotocellValue() < photocellTreshold;
+  return getPhotocellValue() < photocellThreshold;
 }

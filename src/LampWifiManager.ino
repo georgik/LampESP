@@ -7,6 +7,7 @@ char configMqttPort[6];
 char configMqttParentTopic[40];
 char configDeviceHostname[40];
 char configTemperatureCorrection[6];
+char configPhotocellThreshold[6];
 
 WiFiManager wifiManager;
 
@@ -39,6 +40,10 @@ float getTemperatureCorrection() {
   return String(configTemperatureCorrection).toFloat();
 }
 
+int getPhotocellThreshold() {
+  return String(configPhotocellThreshold).toInt();
+}
+
 const char* getMqttPortAsString() {
   return configMqttPort;
 }
@@ -55,6 +60,8 @@ void setConfigValue(String key, String value) {
     value.toCharArray(configDeviceHostname, valueLength);
   } else if (key == "temperature_correction") {
     value.toCharArray(configTemperatureCorrection, valueLength);
+  } else if (key == "photocell_threshold") {
+    value.toCharArray(configPhotocellThreshold, valueLength);
   }
 }
 
@@ -64,6 +71,7 @@ void setDefaultConfig() {
   strcpy(configMqttParentTopic, "home");
   strcpy(configDeviceHostname, "esp8266");
   strcpy(configTemperatureCorrection, "0");
+  strcpy(configPhotocellThreshold, "220");
 }
 
 void printMacAddress() {
@@ -81,6 +89,12 @@ void printMacAddress() {
   }
 
   Serial.println("");
+}
+
+void loadConfigValue(ArduinoJson::JsonObject& json, char* targetVar, String keyName) {
+  if (json.containsKey(keyName)) {
+    strcpy(targetVar, json[keyName]);
+  }
 }
 
 void setupWifi(int portalConfigTimeout) {
@@ -110,13 +124,12 @@ void setupWifi(int portalConfigTimeout) {
         if (json.success()) {
           Serial.println("\nparsed json");
 
-          strcpy(configMqttHost, json["mqtt_host"]);
-          strcpy(configMqttPort, json["mqtt_port"]);
-          strcpy(configMqttParentTopic, json["mqtt_parent_topic"]);
-          strcpy(configDeviceHostname, json["hostname"]);
-          if (json.containsKey("temperature_correction")) {
-            strcpy(configTemperatureCorrection, json["temperature_correction"]);
-          }
+          loadConfigValue(json, configMqttHost, "mqtt_host");
+          loadConfigValue(json, configMqttPort, "mqtt_port");
+          loadConfigValue(json, configMqttParentTopic, "mqtt_parent_topic");
+          loadConfigValue(json, configDeviceHostname, "hostname");
+          loadConfigValue(json, configTemperatureCorrection, "temperature_correction");
+          loadConfigValue(json, configPhotocellThreshold, "photocell_threshold");
 
         } else {
           Serial.println("failed to load json config");
@@ -167,6 +180,7 @@ void saveConfig() {
   json["mqtt_parent_topic"] = getMqttParentTopic();
   json["hostname"] = getHostname();
   json["temperature_correction"] = String(getTemperatureCorrection());
+  json["photocell_threshold"] = String(getPhotocellThreshold());
 
   File configFile = SPIFFS.open("/config.json", "w");
   if (!configFile) {
