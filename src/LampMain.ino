@@ -16,6 +16,7 @@ void setup() {
   setupOTA();
   setupWebServer();
   setupMQTT();
+  setupPhotocell();
   setupDHT();
   setupLED();
   setupPIR();
