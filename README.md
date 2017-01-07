@@ -34,9 +34,9 @@ Available configuration options:
  - `mqtt_host` - server host with Mosquitto or other MQTT broker 
  - `mqtt_port` - server port with Mosquitto
  - `mqtt_parent_topic` - all topics for the devices will be published/subscribed under this topic (e.g. "/home")
-  - `hostname` - device name used for publishing topics (e.g. "bathroom")
-  - `temperature_correction` - correction which should be added to value measured by temperature sensor (e.g. -1.2)
-  - `photocell_threshold` - value which is considered by photocell as light between 0 and 1023 (e.g. 200)
+ - `hostname` - device name used for publishing topics (e.g. "bathroom")
+ - `temperature_correction` - correction which should be added to value measured by temperature sensor (e.g. -1.2)
+ - `photocell_threshold` - value which is considered by photocell as light between 0 and 1023 (e.g. 200)
 
 Reboot device: `/reboot`
 
