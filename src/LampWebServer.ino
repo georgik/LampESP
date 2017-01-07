@@ -103,6 +103,7 @@ void handleRoot() {
   message += "<li>Photocell value: " + String(getPhotocellValue()) + " (threshold: " + String(getPhotocellThreshold())+ ")</li>";
   message += "<li>Temperature: " + String(getTemperature()) + " (applied correction: " + String(getTemperatureCorrection()) + ")</li>";
   message += "<li>Humidity: " + String(getHumidity()) + "</li>";
+  message += "<li>Water Level: " + String(getWaterLevelSensor()) + "</li>";
 
   message += "</ul></body></html>";
 
