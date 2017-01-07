@@ -3,6 +3,7 @@
 Task* dhtTask;
 DHT *dht;
 bool isFahrenheit = false;
+bool isDHTEnabled = false;
 float lastHumidity = 0;
 float lastTemperature = 0;
 float lastHeat = 0;
@@ -19,8 +20,11 @@ void logDHTMeasurement() {
     Serial.println("Failed to read from DHT sensor!");
     dhtFailCounter++;
     if (dhtFailCounter == 3) {
+      isDHTEnabled = false;
       dhtTask->disable();
       dhtFailCounter = 0;
+      sendMessage("temperature", "n/a");
+      sendMessage("humidity", "n/a");
     }
     return;
   }
@@ -43,10 +47,11 @@ void logDHTMeasurement() {
 }
 
 void setupDHT(bool isEnabled, int pin) {
+  isDHTEnabled = isEnabled;
   if (!isEnabled) {
     return;
   }
-  
+
   temperatureCorrection = getTemperatureCorrection();
 
   dht = new DHT(pin, DHT22);
@@ -61,10 +66,18 @@ void setupDHT(bool isEnabled, int pin) {
 }
 
 float getTemperature() {
+  if (!isDHTEnabled) {
+    return 0;
+  }
+
   return lastTemperature;
 }
 
 float getHumidity() {
+  if (!isDHTEnabled) {
+    return 0;
+  }
+
   return lastHumidity;
 }
 
