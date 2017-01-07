@@ -2,7 +2,13 @@
 int photocellPin = A0;
 int photocellThreshold = 220;
 
-void setupPhotocell() {
+void setupPhotocell(bool isEnabled, int pin) {
+  if (!isEnabled) {
+    return;
+  }
+
+  photocellPin = pin;
+
   photocellThreshold = getPhotocellThreshold();
 }
 

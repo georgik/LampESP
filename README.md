@@ -1,6 +1,9 @@
-# Lamp ESP module
+# Lamp ESP
 
-ESP8266 code for controlling Lamp Relay and several other gadgets connected to ESP8266
+Flexible modular non-blocking system for controlling ESP8266.
+You can reconfigure the system based on how you plug PINs.
+You can turn on/off modules which are not used.
+Configuration of current module is store in JSON file.
 
 More information about the project:
 
@@ -8,21 +11,58 @@ More information about the project:
 
 # Related project
 
-- LampAndroidApp - https://github.com/georgik/LampAndroidApp - application which allows remot controll
+- LampAndroidApp - https://github.com/georgik/LampAndroidApp - application which allows remot control of relay
 
-# Features
+# Core features
 
-## Air quality sensor
+## Over the air update - OTA
 
-Read value from A0 and send it to server.
+Push new version to device over WiFi.
 
 ## MQTT Client
 
 Connects to MQTT broker - send status and receive commands.
 
-## Over the air update - OTA
+## Web server
 
-Push new version to device over WiFi.
+Simple web interface which display's current status of module and let you configure whole system. You can also change the state of relay.
+
+Configuration endpoint: `/config?NAME=VALUE`
+
+Available configuration options:
+
+ - `mqtt_host` - server host with Mosquitto or other MQTT broker 
+ - `mqtt_port` - server port with Mosquitto
+ - `mqtt_parent_topic` - all topics for the devices will be published/subscribed under this topic (e.g. "/home")
+  - `hostname` - device name used for publishing topics (e.g. "bathroom")
+  - `temperature_correction` - correction which should be added to value measured by temperature sensor (e.g. -1.2)
+  - `photocell_threshold` - value which is considered by photocell as light between 0 and 1023 (e.g. 200)
+
+Reboot device: `/reboot`
+
+## WiFiManager
+
+Start Config Portal when device is not able to connect to WiFi.
+Access 192.168.4.1 IP to configure the device.
+
+# Customize application
+
+Recommendation: Use PlatformIO for development.
+
+You can turn on/off modules from code in LampMain.
+Each module has setup function which takes two parameters or more:
+
+ - `bool isEnabled`
+ - `int pin`
+
+Further configuration could be done via REST API and request to config page.
+E.g.: `http://192.168.2.2/config?temperature_correction=-2`
+
+# Suppored modules
+
+## Air quality sensor
+
+Read value from analog and send it to server.
 
 ## DHT sensor
 
@@ -45,16 +85,15 @@ If no motion was detected then it counts down and display further colors.
 
 Schema: http://www.esp8266learning.com/wemos-rgb-led-example.php
 
-## Web server
+## Water Level Sensor
 
-Simple web interface with GET API for controlling relay module.
+Indicate whether water was dete/restartcted by sensor
 
-## WiFiManager
+# Version 0.3
 
-Start Config Portal when device is not able to connect to WiFi.
-Access 192.168.4.1 IP to configure the device.
+Intorduced modular architecture. User can configure functionality in top-level code.
 
-#Version 0.2
+# Version 0.2
 
 Configuration is stored in config.json and managed by WiFiManager.
 
@@ -63,6 +102,3 @@ Configuration is stored in config.json and managed by WiFiManager.
 Direct communication based on GET API, MQTT and OTA support.
 See branch v0.1.
 
-# Customize application
-
-Setup values for MQTT server via WiFiManager

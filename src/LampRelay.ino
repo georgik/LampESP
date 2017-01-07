@@ -1,7 +1,11 @@
 
-const int relayPin = D1;
+int relayPin = D1;
 
-void setupRelay() {
+void setupRelay(bool isEnabled, int pin) {
+  if (!isEnabled) {
+    return;
+  }
+  relayPin = pin;
   pinMode(relayPin, OUTPUT);
 }
 

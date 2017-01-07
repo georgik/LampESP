@@ -6,7 +6,13 @@ bool PIRState = LOW;
 Task* pirTask;
 int pirCountdown = 0;
 
-void setupPIR() {
+void setupPIR(bool isEnabled, int pin) {
+  if (!isEnabled) {
+    return;
+  }
+
+  pirPin = pin;
+  
   pirTask = new Task(1000, TASK_FOREVER, &handlePIR);
   runner.addTask(*pirTask);
   turnOnPIR();

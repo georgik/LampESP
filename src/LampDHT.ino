@@ -1,7 +1,5 @@
 #include "DHT.h"
 
-#define DHTPIN D4
-
 Task* dhtTask;
 DHT *dht;
 bool isFahrenheit = false;
@@ -44,10 +42,14 @@ void logDHTMeasurement() {
   }
 }
 
-void setupDHT() {
+void setupDHT(bool isEnabled, int pin) {
+  if (!isEnabled) {
+    return;
+  }
+  
   temperatureCorrection = getTemperatureCorrection();
 
-  dht = new DHT(D4, DHT22);
+  dht = new DHT(pin, DHT22);
   dht->begin();
 
   // Meassure once per minute. It seems that 5 second measurement is heating up

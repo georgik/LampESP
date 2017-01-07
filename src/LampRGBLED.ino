@@ -4,11 +4,16 @@ int bluePin = D3;
 
 bool isRGBLEDEnabled = false;
 
-void setupRGBLED(bool isEnabled) {
-  isEnabled = isRGBLEDEnabled;
+void setupRGBLED(bool isEnabled, int mRedPin, int mGreenPin, int mBluePin) {
+  isRGBLEDEnabled = isEnabled;
   if (!isRGBLEDEnabled) {
     return;
   }
+
+  redPin = mRedPin;
+  greenPin = mGreenPin;
+  bluePin = mBluePin;
+
   pinMode(redPin, OUTPUT);
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);

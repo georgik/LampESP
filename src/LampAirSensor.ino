@@ -4,10 +4,13 @@ int sensorValue = 0;
 int lastSensorValue = 0;
 Task* airSensorTask;
 
-void setupAirSensor(bool isEnabled) {
+void setupAirSensor(bool isEnabled, int pin) {
   if (!isEnabled) {
     return;
   }
+
+  airSensorPin = pin;
+
   airSensorTask = new Task(60000, TASK_FOREVER, &handleAirSensor);
   runner.addTask(*airSensorTask);
   airSensorTask->enable();

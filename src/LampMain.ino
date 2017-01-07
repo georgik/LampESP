@@ -8,21 +8,22 @@ void setup() {
   delay(10);
   runner.init();
 
-  setupRelay();
-  // true - to enable functionality
-  setupRGBLED(false);
-
   setupWifi(60);
   setupOTA();
   setupWebServer();
   setupMQTT();
-  setupPhotocell();
-  setupDHT();
-  setupLED();
-  setupPIR();
 
   // true - to enable functionality
-  setupAirSensor(false);
+  setupRelay(true, D1);
+  setupRGBLED(false, D2, D5, D3);
+  setupPhotocell(true, A0);
+  setupDHT(true, D4);
+  setupLED(true, D6);
+  setupPIR(true, D7);
+
+  // true - to enable functionality
+  setupAirSensor(false, A0);
+  setupWaterLevelSensor(true, D2);
 }
 
 void loop() {

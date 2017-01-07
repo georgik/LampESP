@@ -1,7 +1,13 @@
 
 int ledPin = D6;
 
-void setupLED() {
+void setupLED(bool isEnabled, int pin) {
+  if (!isEnabled) {
+    return;
+  }
+
+  ledPin = pin;
+  
   pinMode(ledPin, OUTPUT);
   turnOffLED();
 }
