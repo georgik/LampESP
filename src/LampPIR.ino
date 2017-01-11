@@ -12,7 +12,7 @@ void setupPIR(bool isEnabled, int pin) {
   }
 
   pirPin = pin;
-  
+  pinMode(pirPin, INPUT);
   pirTask = new Task(1000, TASK_FOREVER, &handlePIR);
   runner.addTask(*pirTask);
   turnOnPIR();
