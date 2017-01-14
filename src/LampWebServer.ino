@@ -69,15 +69,10 @@ void handleRoot() {
   message += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>";
   message += "<link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u\" crossorigin=\"anonymous\">";
 
-  message += "<body><h2>Lamp is now: ";
+  message += "<body><h2><a href='/'>Lamp ESP</a></h2> ";
 
   int relayState = getRelay();
-  if(relayState == HIGH) {
-    message += "On";
-  } else {
-    message += "Off";
-  }
-  message += "</h2>";
+
   message += "<br><br>";
 
   if(relayState == HIGH) {
