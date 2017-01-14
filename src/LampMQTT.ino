@@ -21,7 +21,6 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 bool isDayligh = false;
 
-
 static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
   String topic = topicChar;
 
@@ -62,6 +61,8 @@ static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
         setRelay(HIGH);
       }
     }
+  } else if (topic.endsWith("sleep")) {
+    deepSleepInterval = payload.toInt();
   }
 }
 

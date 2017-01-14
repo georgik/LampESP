@@ -23,7 +23,9 @@ void setup() {
 
   // true - to enable functionality
   setupAirSensor(false, A0);
-  setupWaterLevelSensor(true, D2);
+  setupWaterLevelSensor(false, D2);
+
+  setupDeepSleep(false);
 }
 
 void loop() {
