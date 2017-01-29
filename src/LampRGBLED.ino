@@ -40,6 +40,10 @@ void redLED() {
   setRGBLED(LOW, HIGH, HIGH);
 }
 
+void whiteLED() {
+  setRGBLED(LOW, LOW, LOW);
+}
+
 void setRGBLED(bool redValue, bool greenValue, bool blueValue) {
   if (!isRGBLEDEnabled) {
     return;
@@ -47,6 +51,28 @@ void setRGBLED(bool redValue, bool greenValue, bool blueValue) {
   digitalWrite(redPin, redValue);
   digitalWrite(greenPin, greenValue);
   digitalWrite(bluePin, blueValue);
+}
+
+void handleRGBLEDCommand(String payload) {
+  if (!isRGBLEDEnabled) {
+    return;
+  }
+
+  if (payload == "green") {
+    greenLED();
+  } else if (payload == "yellow") {
+    orangeLED();
+  } else if (payload == "orange") {
+    orangeLED();
+  } else if (payload == "red") {
+    redLED();
+  } else if (payload == "blue") {
+    blueLED();
+  } else if (payload == "white") {
+    whiteLED();
+  } else if (payload == "off") {
+    turnOffRGBLED();
+  }
 }
 
 void setColor(int state) {

@@ -1,8 +1,10 @@
 
 int relayPin = D1;
+bool isRelayEnabled = false;
 
 void setupRelay(bool isEnabled, int pin) {
-  if (!isEnabled) {
+  isRelayEnabled = isEnabled;
+  if (!isRelayEnabled) {
     return;
   }
   relayPin = pin;
@@ -10,6 +12,10 @@ void setupRelay(bool isEnabled, int pin) {
 }
 
 void setRelay(int state) {
+  if (!isRelayEnabled) {
+    return;
+  }
+
   digitalWrite(relayPin, state);
   if (state == LOW) {
       mqttClient.publish(topicName("relay"), "off", true);

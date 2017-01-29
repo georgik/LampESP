@@ -61,6 +61,9 @@ static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
         setRelay(HIGH);
       }
     }
+
+    handleRGBLEDCommand(payload);
+
   } else if (topic.endsWith("sleep")) {
     deepSleepInterval = payload.toInt();
   }
