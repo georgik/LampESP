@@ -31,12 +31,13 @@ Configuration endpoint: `/config?NAME=VALUE`
 
 Available configuration options:
 
- - `mqtt_host` - server host with Mosquitto or other MQTT broker 
+ - `mqtt_host` - server host with Mosquitto or other MQTT broker
  - `mqtt_port` - server port with Mosquitto
  - `mqtt_parent_topic` - all topics for the devices will be published/subscribed under this topic (e.g. "/home")
  - `hostname` - device name used for publishing topics (e.g. "bathroom")
  - `temperature_correction` - correction which should be added to value measured by temperature sensor (e.g. -1.2)
  - `photocell_threshold` - value which is considered by photocell as light between 0 and 1023 (e.g. 200)
+ - `pir_up_interval` - number of seconds when PIR is considered up after the first HIGH state
 
 Reboot device: `/reboot`
 
@@ -101,4 +102,3 @@ Configuration is stored in config.json and managed by WiFiManager.
 
 Direct communication based on GET API, MQTT and OTA support.
 See branch v0.1.
-
