@@ -93,7 +93,7 @@ Available colors:
  - `red`  
  - `white`
 
- Or message `off` to turn the LED off.
+Or message `off` to turn the LED off.
 
 Schema: http://www.esp8266learning.com/wemos-rgb-led-example.php
 
