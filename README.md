@@ -84,6 +84,17 @@ Receive MQTT command and change state of relay.
 RGB LED indicates detection of motion based on PIR.
 If no motion was detected then it counts down and display further colors.
 
+RGB LED could be controlled via MQTT message sent to topic /parent/host/command.
+
+Available colors:
+ - `blue`
+ - `green`
+ - `orange`
+ - `red`  
+ - `white`
+
+ Or message `off` to turn the LED off.
+
 Schema: http://www.esp8266learning.com/wemos-rgb-led-example.php
 
 ## Water Level Sensor
