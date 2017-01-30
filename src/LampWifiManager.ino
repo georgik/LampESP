@@ -8,6 +8,7 @@ char configMqttParentTopic[40];
 char configDeviceHostname[40];
 char configTemperatureCorrection[6];
 char configPhotocellThreshold[6];
+char configPIRUpInterval[6];
 
 WiFiManager wifiManager;
 
@@ -44,6 +45,10 @@ int getPhotocellThreshold() {
   return String(configPhotocellThreshold).toInt();
 }
 
+int getPIRUpInterval() {
+  return String(configPIRUpInterval).toInt();
+}
+
 const char* getMqttPortAsString() {
   return configMqttPort;
 }
@@ -62,6 +67,8 @@ void setConfigValue(String key, String value) {
     value.toCharArray(configTemperatureCorrection, valueLength);
   } else if (key == "photocell_threshold") {
     value.toCharArray(configPhotocellThreshold, valueLength);
+  } else if (key == "pir_up_interval") {
+    value.toCharArray(configPIRUpInterval, valueLength);
   }
 }
 
@@ -72,6 +79,7 @@ void setDefaultConfig() {
   strcpy(configDeviceHostname, "esp8266");
   strcpy(configTemperatureCorrection, "0");
   strcpy(configPhotocellThreshold, "220");
+  strcpy(configPIRUpInterval, "30");
 }
 
 void printMacAddress() {
@@ -130,6 +138,7 @@ void setupWifi(int portalConfigTimeout) {
           loadConfigValue(json, configDeviceHostname, "hostname");
           loadConfigValue(json, configTemperatureCorrection, "temperature_correction");
           loadConfigValue(json, configPhotocellThreshold, "photocell_threshold");
+          loadConfigValue(json, configPIRUpInterval, "pir_up_interval");
 
         } else {
           Serial.println("failed to load json config");
@@ -181,6 +190,7 @@ void saveConfig() {
   json["hostname"] = getHostname();
   json["temperature_correction"] = String(getTemperatureCorrection());
   json["photocell_threshold"] = String(getPhotocellThreshold());
+  json["pir_up_interval"] = String(getPIRUpInterval());
 
   File configFile = SPIFFS.open("/config.json", "w");
   if (!configFile) {

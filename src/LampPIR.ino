@@ -5,6 +5,7 @@ bool lastPIRState = LOW;
 bool PIRState = LOW;
 Task* pirTask;
 int pirCountdown = 0;
+int pirUpInterval = 30;
 
 void setupPIR(bool isEnabled, int pin) {
   if (!isEnabled) {
@@ -13,6 +14,7 @@ void setupPIR(bool isEnabled, int pin) {
 
   pirPin = pin;
   pinMode(pirPin, INPUT);
+  pirUpInterval = getPIRUpInterval();
   pirTask = new Task(1000, TASK_FOREVER, &handlePIR);
   runner.addTask(*pirTask);
   turnOnPIR();
@@ -45,9 +47,8 @@ void handlePIR() {
           Serial.println("PIR HIGH");
         }
 
-        // Half minute to turn off the light
-        pirCountdown = 30;
-        // pirCountdown = 10*60;
+        // Keep PIR up for defined period of time in seconds
+        pirCountdown = pirUpInterval;
       }
     }
   }
