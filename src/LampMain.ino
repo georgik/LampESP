@@ -14,12 +14,12 @@ void setup() {
   setupMQTT();
 
   // true - to enable functionality
-  setupRelay(false, D1);
-  setupRGBLED(true, D2, D1, D3);
+  setupRelay(true, D1);
+  setupRGBLED(true, D2, D5, D3);
   setupPhotocell(false, A0);
-  setupDHT(false, D4);
+  setupDHT(true, D4);
   setupLED(false, D6);
-  setupPIR(false, D7);
+  setupPIR(true, D7);
 
   // true - to enable functionality
   setupAirSensor(false, A0);

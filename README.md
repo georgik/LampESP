@@ -38,6 +38,7 @@ Available configuration options:
  - `temperature_correction` - correction which should be added to value measured by temperature sensor (e.g. -1.2)
  - `photocell_threshold` - value which is considered by photocell as light between 0 and 1023 (e.g. 200)
  - `pir_up_interval` - number of seconds when PIR is considered up after the first HIGH state
+ - `dht_interval` - number of seconds between measurements
 
 Reboot device: `/reboot`
 
@@ -81,9 +82,6 @@ Receive MQTT command and change state of relay.
 
 ## RGB LED
 
-RGB LED indicates detection of motion based on PIR.
-If no motion was detected then it counts down and display further colors.
-
 RGB LED could be controlled via MQTT message sent to topic /parent/host/command.
 
 Available colors:
@@ -93,7 +91,7 @@ Available colors:
  - `red`  
  - `white`
 
-Or message `off` to turn the LED off.
+Or message `black` to turn the LED off.
 
 Schema: http://www.esp8266learning.com/wemos-rgb-led-example.php
 

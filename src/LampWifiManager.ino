@@ -9,6 +9,17 @@ char configDeviceHostname[40];
 char configTemperatureCorrection[6];
 char configPhotocellThreshold[6];
 char configPIRUpInterval[6];
+char configDHTInterval[6];
+
+const char *CFG_MQTT_HOST = "mqtt_host";
+const char *CFG_MQTT_PORT = "mqtt_port";
+const char *CFG_MQTT_PARENT_TOPIC = "mqtt_parent_topic";
+const char *CFG_HOSTNAME = "hostname";
+const char *CFG_TEMPERATURE_CORRECTION = "temperature_correction";
+const char *CFG_PHOTOCELL_THRESHOLD = "photocell_threshold";
+const char *CFG_PIR_UP_INTERVAL = "pir_up_interval";
+// Interval between two measurements
+const char *CFG_DHT_INTERVAL = "dht_interval";
 
 WiFiManager wifiManager;
 
@@ -49,26 +60,32 @@ int getPIRUpInterval() {
   return String(configPIRUpInterval).toInt();
 }
 
+int getDHTInterval() {
+  return String(configDHTInterval).toInt();
+}
+
 const char* getMqttPortAsString() {
   return configMqttPort;
 }
 
 void setConfigValue(String key, String value) {
   int valueLength = value.length()+1;
-  if (key == "mqtt_host") {
+  if (key == CFG_MQTT_HOST) {
     value.toCharArray(configMqttHost, valueLength);
-  } else if (key == "mqtt_port") {
+  } else if (key == CFG_MQTT_PORT) {
     value.toCharArray(configMqttPort, valueLength);
-  } else if (key == "mqtt_parent_topic") {
+  } else if (key == CFG_MQTT_PARENT_TOPIC) {
     value.toCharArray(configMqttParentTopic, valueLength);
-  } else if (key == "hostname") {
+  } else if (key == CFG_HOSTNAME) {
     value.toCharArray(configDeviceHostname, valueLength);
-  } else if (key == "temperature_correction") {
+  } else if (key == CFG_TEMPERATURE_CORRECTION) {
     value.toCharArray(configTemperatureCorrection, valueLength);
-  } else if (key == "photocell_threshold") {
+  } else if (key == CFG_PHOTOCELL_THRESHOLD) {
     value.toCharArray(configPhotocellThreshold, valueLength);
-  } else if (key == "pir_up_interval") {
+  } else if (key == CFG_PIR_UP_INTERVAL) {
     value.toCharArray(configPIRUpInterval, valueLength);
+  } else if (key == CFG_DHT_INTERVAL) {
+    value.toCharArray(configDHTInterval, valueLength);
   }
 }
 
@@ -80,6 +97,7 @@ void setDefaultConfig() {
   strcpy(configTemperatureCorrection, "0");
   strcpy(configPhotocellThreshold, "220");
   strcpy(configPIRUpInterval, "30");
+  strcpy(configDHTInterval, "60");
 }
 
 void printMacAddress() {
@@ -132,13 +150,14 @@ void setupWifi(int portalConfigTimeout) {
         if (json.success()) {
           Serial.println("\nparsed json");
 
-          loadConfigValue(json, configMqttHost, "mqtt_host");
-          loadConfigValue(json, configMqttPort, "mqtt_port");
-          loadConfigValue(json, configMqttParentTopic, "mqtt_parent_topic");
-          loadConfigValue(json, configDeviceHostname, "hostname");
-          loadConfigValue(json, configTemperatureCorrection, "temperature_correction");
-          loadConfigValue(json, configPhotocellThreshold, "photocell_threshold");
-          loadConfigValue(json, configPIRUpInterval, "pir_up_interval");
+          loadConfigValue(json, configMqttHost, CFG_MQTT_HOST);
+          loadConfigValue(json, configMqttPort, CFG_MQTT_PORT);
+          loadConfigValue(json, configMqttParentTopic, CFG_MQTT_PARENT_TOPIC);
+          loadConfigValue(json, configDeviceHostname, CFG_HOSTNAME);
+          loadConfigValue(json, configTemperatureCorrection, CFG_TEMPERATURE_CORRECTION);
+          loadConfigValue(json, configPhotocellThreshold, CFG_PHOTOCELL_THRESHOLD);
+          loadConfigValue(json, configPIRUpInterval, CFG_PIR_UP_INTERVAL);
+          loadConfigValue(json, configDHTInterval, CFG_DHT_INTERVAL);
 
         } else {
           Serial.println("failed to load json config");
@@ -151,10 +170,10 @@ void setupWifi(int portalConfigTimeout) {
   //end read
 
   // id/name, placeholder/prompt, default, length
-  WiFiManagerParameter custom_mqtt_host("mqtt_host", "MQTT host", configMqttHost, 40);
-  WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT port", configMqttPort, 5);
-  WiFiManagerParameter custom_mqtt_parent_topic("mqtt_parent_topic", "MQTT Parent topic", configMqttParentTopic, 40);
-  WiFiManagerParameter custom_hostname("hostname", "Device hostname/Room name", configDeviceHostname, 40);
+  WiFiManagerParameter custom_mqtt_host(CFG_MQTT_HOST, "MQTT host", configMqttHost, 40);
+  WiFiManagerParameter custom_mqtt_port(CFG_MQTT_PORT, "MQTT port", configMqttPort, 5);
+  WiFiManagerParameter custom_mqtt_parent_topic(CFG_MQTT_PARENT_TOPIC, "MQTT Parent topic", configMqttParentTopic, 40);
+  WiFiManagerParameter custom_hostname(CFG_HOSTNAME, "Device hostname/Room name", configDeviceHostname, 40);
 
   wifiManager.addParameter(&custom_mqtt_host);
   wifiManager.addParameter(&custom_mqtt_port);
@@ -184,13 +203,14 @@ void saveConfig() {
   Serial.println("saving config");
   DynamicJsonBuffer jsonBuffer;
   JsonObject& json = jsonBuffer.createObject();
-  json["mqtt_host"] = getMqttHost();
-  json["mqtt_port"] = getMqttPortAsString();
-  json["mqtt_parent_topic"] = getMqttParentTopic();
-  json["hostname"] = getHostname();
-  json["temperature_correction"] = String(getTemperatureCorrection());
-  json["photocell_threshold"] = String(getPhotocellThreshold());
-  json["pir_up_interval"] = String(getPIRUpInterval());
+  json[CFG_MQTT_HOST] = getMqttHost();
+  json[CFG_MQTT_PORT] = getMqttPortAsString();
+  json[CFG_MQTT_PARENT_TOPIC] = getMqttParentTopic();
+  json[CFG_HOSTNAME] = getHostname();
+  json[CFG_TEMPERATURE_CORRECTION] = String(getTemperatureCorrection());
+  json[CFG_PHOTOCELL_THRESHOLD] = String(getPhotocellThreshold());
+  json[CFG_PIR_UP_INTERVAL] = String(getPIRUpInterval());
+  json[CFG_DHT_INTERVAL] = String(getDHTInterval());
 
   File configFile = SPIFFS.open("/config.json", "w");
   if (!configFile) {

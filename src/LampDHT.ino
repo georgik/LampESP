@@ -9,6 +9,7 @@ float lastTemperature = 0;
 float lastHeat = 0;
 int dhtFailCounter = 0;
 float temperatureCorrection = 0;
+int dhtInterval = 60;
 
 void logDHTMeasurement() {
   // Initialize DHT in case of previous failure
@@ -68,14 +69,12 @@ void setupDHT(bool isEnabled, int pin) {
 
   temperatureCorrection = getTemperatureCorrection();
 
+  dhtInterval = getDHTInterval();
   dht = new DHT(pin, DHT22);
   dhtFailCounter = 0;
   dht->begin();
 
-  // Meassure once per minute. It seems that 5 second measurement is heating up
-  // DHT module about 0.1C per 20 seconds and could reach about 2C higher
-  // temperature than should be meassured
-  dhtTask = new Task(60000, TASK_FOREVER, &logDHTMeasurement);
+  dhtTask = new Task(dhtInterval * 1000, TASK_FOREVER, &logDHTMeasurement);
   runner.addTask(*dhtTask);
   dhtTask->enable();
 }

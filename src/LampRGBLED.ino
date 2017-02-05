@@ -70,31 +70,7 @@ void handleRGBLEDCommand(String payload) {
     blueLED();
   } else if (payload == "white") {
     whiteLED();
-  } else if (payload == "off") {
+  } else if (payload == "black") {
     turnOffRGBLED();
-  }
-}
-
-void setColor(int state) {
-  switch (state) {
-    case 5: {
-      redLED();
-    }
-    case 4: {
-      orangeLED();
-      break;
-    }
-    case 3: {
-      greenLED();
-      break;
-    }
-    case 2: {
-      blueLED();
-      break;
-    }
-    case 1: {
-      turnOffRGBLED();
-      break;
-    }
   }
 }
