@@ -14,7 +14,7 @@ void setup() {
   setupMQTT();
 
   // true - to enable functionality
-  setupDisplay(true, D7, D8);
+  setupDisplay(true, D2, D8);
   setupRelay(false, D1);
   setupRGBLED(false, D2, D5, D3);
   setupPhotocell(false, A0);
