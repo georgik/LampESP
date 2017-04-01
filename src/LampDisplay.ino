@@ -56,7 +56,7 @@ void handleDisplayCommand(String payload) {
 }
 
 void drawText() {
-  display->setFont(Roboto_Medium_48);
+  display->setFont(Roboto_Light_54);
   display->setTextAlignment(TEXT_ALIGN_LEFT);
   display->drawStringMaxWidth(0, 0, 128, displayText );
 }
