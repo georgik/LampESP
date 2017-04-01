@@ -38,6 +38,8 @@ void setupDisplay(bool isEnabled, int DCPin, int CSPin) {
   display->flipScreenVertically();
   display->setFont(ArialMT_Plain_10);
   display->drawStringMaxWidth(0, 0, 128, displayText );
+  // Drop contrast to make text little bit more readable
+  display->setContrast(10);
   display->display();
 
   displayTask = new Task(3000, TASK_FOREVER, &handleDisplay);
