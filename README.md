@@ -66,6 +66,12 @@ E.g.: `http://192.168.2.2/config?temperature_correction=-2`
 
 Read value from analog and send it to server.
 
+## Display
+
+Display value delivered to topic /+/+/display. E.g. temperature.
+Current version is using SPI SSD1306 based on library:
+https://github.com/squix78/esp8266-oled-ssd1306
+
 ## DHT sensor
 
 Meassure temperature and humidity.

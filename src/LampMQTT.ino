@@ -66,6 +66,8 @@ static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
 
   } else if (topic.endsWith("sleep")) {
     deepSleepInterval = payload.toInt();
+  } else if (topic.endsWith("display")) {
+    handleDisplayCommand(payload);
   }
 }
 
@@ -80,6 +82,7 @@ void reconnect() {
       Serial.println("connected");
       mqttClient.publish(topicName("status"), "online");
       mqttClient.subscribe(topicName("command"));
+      mqttClient.subscribe(topicName("display"));
       mqttClient.subscribe(topic("info", "daylight"));
     } else {
       Serial.println("failed");
