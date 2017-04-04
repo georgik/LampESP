@@ -7,7 +7,7 @@ Configuration of current module is store in JSON file.
 
 More information about the project:
 
-- http://georgik.sinusgear.com/category/iot/
+- http://georgik.rocks/category/iot/
 
 # Related project
 
