@@ -3,7 +3,7 @@
 
 Task* displayTask;
 bool isDisplayEnabled = false;
-String displayText = "-=[LampESP]=- georgik.rocks";
+String displayText = "----";
 int displayDCPin = D2;
 int displayCSPin = D8;
 
@@ -19,10 +19,9 @@ int displayCSPin = D8;
 SSD1306Spi *display;
 // SH1106 display(0x3c, D3, D5);
 
-typedef void (*DisplayPage)(void);
+typedef bool (*DisplayPage)(void);
 
 int pageMode = 0;
-int counter = 1;
 
 void setupDisplay(bool isEnabled, int DCPin, int CSPin) {
 
@@ -55,23 +54,39 @@ void handleDisplayCommand(String payload) {
   displayText = payload;
 }
 
-void drawText() {
+bool drawText() {
   display->setFont(DejaVu_LGC_Sans_Mono_52);
   display->setTextAlignment(TEXT_ALIGN_LEFT);
   display->drawStringMaxWidth(0, 0, 128, displayText );
+  // Render the page
+  return true;
 }
 
+bool drawConnectionStatus() {
+  if (getMqttFailedConnectionCounter() == 0) {
+    // Skip the page
+    return false;
+  }
+  display->setFont(ArialMT_Plain_10);
+  display->setTextAlignment(TEXT_ALIGN_LEFT);
+  display->drawStringMaxWidth(0, 0, 128, "Connecting to:");
+  display->drawStringMaxWidth(4, 12, 126, getMqttHost());
+  display->drawStringMaxWidth(0, 24, 128, "Attempt #" + String(getMqttFailedConnectionCounter()));
+  // Render the page
+  return true;
+}
 
-DisplayPage displayPages[] = {drawText};
+DisplayPage displayPages[] = {drawText, drawConnectionStatus};
 int pagesLength = (sizeof(displayPages) / sizeof(DisplayPage));
 long timeSinceLastModeSwitch = 0;
 
 void handleDisplay() {
   display->clear();
-  displayPages[pageMode]();
+
+  // Render only pages which has something to render
+  do {
+    pageMode = (pageMode + 1)  % pagesLength;
+  } while (displayPages[pageMode]() == false);
 
   display->display();
-
-  pageMode = (pageMode + 1)  % pagesLength;
-  counter++;
 }

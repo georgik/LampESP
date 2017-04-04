@@ -1,6 +1,13 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+// How many times connection to MQTT failed since last success
+unsigned int mqttFailedConnectionCounter = 0;
+
+unsigned int getMqttFailedConnectionCounter() {
+  return mqttFailedConnectionCounter;
+}
+
 #define topicName(a) _topicName((char*)a)
 static char* _topicName(char *name)
 {
@@ -84,8 +91,10 @@ void reconnect() {
       mqttClient.subscribe(topicName("command"));
       mqttClient.subscribe(topicName("display"));
       mqttClient.subscribe(topic("info", "daylight"));
+      mqttFailedConnectionCounter = 0;
     } else {
       Serial.println("failed");
+      mqttFailedConnectionCounter++;
     }
     // Any retry should occure in 5 seconds
     waitForReconnectTime = millis() + 5000;
