@@ -3,7 +3,7 @@
 
 Task* displayTask;
 bool isDisplayEnabled = false;
-String displayText = "----";
+String displayText[] = {"----", "", "", "", "", "", "", "", "", ""};
 int displayDCPin = D2;
 int displayCSPin = D8;
 
@@ -19,7 +19,7 @@ int displayCSPin = D8;
 SSD1306Spi *display;
 // SH1106 display(0x3c, D3, D5);
 
-typedef bool (*DisplayPage)(void);
+typedef bool (*DisplayPage)(int);
 
 int pageMode = 0;
 
@@ -36,7 +36,7 @@ void setupDisplay(bool isEnabled, int DCPin, int CSPin) {
   display->init();
   display->flipScreenVertically();
   display->setFont(ArialMT_Plain_10);
-  display->drawStringMaxWidth(0, 0, 128, displayText );
+  display->drawStringMaxWidth(0, 0, 128, "----" );
   // Drop contrast to make text little bit more readable
   display->setContrast(10);
   display->display();
@@ -47,22 +47,41 @@ void setupDisplay(bool isEnabled, int DCPin, int CSPin) {
 }
 
 
-void handleDisplayCommand(String payload) {
+void handleDisplayCommand(String topic, String payload) {
   if (!isDisplayEnabled) {
     return;
   }
-  displayText = payload;
+  int pageIndex = topic.substring(topic.lastIndexOf("/") + 1).toInt();
+
+  displayText[pageIndex] = payload;
 }
 
-bool drawText() {
-  display->setFont(DejaVu_LGC_Sans_Mono_52);
+bool drawText(int pageIndex) {
+  String content = displayText[pageIndex];
+  int dataLength = content.length();
+  // Skip page if content is empty
+  if (dataLength == 0) {
+    return false;
+  }
+
+  if (dataLength < 5) {
+    display->setFont(DejaVu_LGC_Sans_Mono_52);
+  } else if (dataLength < 15) {
+    display->setFont(ArialMT_Plain_24);
+  } else if (dataLength < 32) {
+    display->setFont(ArialMT_Plain_16);
+  } else {
+    display->setFont(ArialMT_Plain_10);
+  }
+
   display->setTextAlignment(TEXT_ALIGN_LEFT);
-  display->drawStringMaxWidth(0, 0, 128, displayText );
+  display->drawStringMaxWidth(0, 0, 128, content );
+
   // Render the page
   return true;
 }
 
-bool drawConnectionStatus() {
+bool drawConnectionStatus(int pageIndex) {
   if (getMqttFailedConnectionCounter() == 0) {
     // Skip the page
     return false;
@@ -76,7 +95,8 @@ bool drawConnectionStatus() {
   return true;
 }
 
-DisplayPage displayPages[] = {drawText, drawConnectionStatus};
+DisplayPage displayPages[] = {drawText, drawText, drawText, drawText, drawText,
+  drawText, drawText, drawText, drawText, drawText, drawConnectionStatus};
 int pagesLength = (sizeof(displayPages) / sizeof(DisplayPage));
 long timeSinceLastModeSwitch = 0;
 
@@ -86,7 +106,7 @@ void handleDisplay() {
   // Render only pages which has something to render
   do {
     pageMode = (pageMode + 1)  % pagesLength;
-  } while (displayPages[pageMode]() == false);
+  } while (displayPages[pageMode](pageMode) == false);
 
   display->display();
 }

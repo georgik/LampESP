@@ -73,8 +73,8 @@ static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
 
   } else if (topic.endsWith("sleep")) {
     deepSleepInterval = payload.toInt();
-  } else if (topic.endsWith("display")) {
-    handleDisplayCommand(payload);
+  } else if (topic.indexOf("display") != -1) {
+    handleDisplayCommand(topic, payload);
   }
 }
 
@@ -89,7 +89,7 @@ void reconnect() {
       Serial.println("connected");
       mqttClient.publish(topicName("status"), "online");
       mqttClient.subscribe(topicName("command"));
-      mqttClient.subscribe(topicName("display"));
+      mqttClient.subscribe(topicName("display/+"));
       mqttClient.subscribe(topic("info", "daylight"));
       mqttFailedConnectionCounter = 0;
     } else {

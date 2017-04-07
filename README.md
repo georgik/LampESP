@@ -68,9 +68,12 @@ Read value from analog and send it to server.
 
 ## Display
 
-Display value delivered to topic /+/+/display. E.g. temperature.
+Display value delivered to topic /+/+/display/number. E.g. temperature.
 Current version is using SPI SSD1306 based on library:
 https://github.com/squix78/esp8266-oled-ssd1306
+
+Current implementation has 10 pages. You can post text to any page and display
+will rotate through the text. To reset the page, just send empty string.
 
 ## DHT sensor
 
