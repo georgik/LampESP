@@ -31,9 +31,11 @@ bool isDayligh = false;
 static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
   String topic = topicChar;
 
-  char buf[161];
-  if (length > 160) {
-    length = 160;
+  // Default size is defined in PubSubClient library and it's limited to 128
+  // https://github.com/knolleary/pubsubclient
+  char buf[MQTT_MAX_PACKET_SIZE];
+  if (length >= MQTT_MAX_PACKET_SIZE) {
+    length = MQTT_MAX_PACKET_SIZE - 1;
   }
   snprintf(buf, length + 1, "%s", payloadByte);
 
