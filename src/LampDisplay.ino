@@ -65,12 +65,16 @@ bool drawText(int pageIndex) {
   }
 
   if (dataLength < 5) {
+    // Font (width x height): 31x62
     display->setFont(DejaVu_LGC_Sans_Mono_52);
-  } else if (dataLength < 15) {
+  } else if (dataLength < 22) {
+    // Font: 24x28
     display->setFont(ArialMT_Plain_24);
-  } else if (dataLength < 32) {
+  } else if (dataLength < 45) {
+    // Font: 16x19
     display->setFont(ArialMT_Plain_16);
   } else {
+    // Font: 10x13
     display->setFont(ArialMT_Plain_10);
   }
 
