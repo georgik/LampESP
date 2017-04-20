@@ -44,6 +44,17 @@ Available configuration options:
 
 Reboot device: `/reboot`
 
+### Configuration for Bluemix
+
+You can connect ESP to IBM Bluemix MQTT and NodeRed. It's slightly different than
+basic Mosquitto. Set following options:
+
+  - `hostname` to d:[YOUR_ORG_ID]:[DEVICE_TYPE]:[DEVICE_NAME]
+  - `mqtt_host` to [YOUR_ORG_ID].messaging.internetofthings.ibmcloud.com
+  - `mqtt_username` to `use-token-auth`
+  - `mqtt_password` to token from Bluemix
+
+
 ## WiFiManager
 
 Start Config Portal when device is not able to connect to WiFi.
