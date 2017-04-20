@@ -1,3 +1,4 @@
+#include <ArduinoJson.h>
 #include "SSD1306Spi.h"
 #include "OLEDDisplayUi.h"
 
@@ -46,14 +47,29 @@ void setupDisplay(bool isEnabled, int DCPin, int CSPin) {
   displayTask->enable();
 }
 
+const char *DISPLAY_OPTION_PAGE = "page";
+const char *DISPLAY_OPTION_TEXT = "text";
 
 void handleDisplayCommand(String topic, String payload) {
   if (!isDisplayEnabled) {
     return;
   }
-  int pageIndex = topic.substring(topic.lastIndexOf("/") + 1).toInt();
 
-  displayText[pageIndex] = payload;
+  DynamicJsonBuffer jsonBuffer;
+  JsonObject& json = jsonBuffer.parseObject(payload);
+  if (!json.success()) {
+    Serial.println("LampDisplay: Parsing JSON failed");
+    return;
+  }
+
+  int pageIndex = 0;
+  if (json.containsKey(DISPLAY_OPTION_PAGE)) {
+    pageIndex = json[DISPLAY_OPTION_PAGE].as<int>();
+  }
+
+  if (json.containsKey(DISPLAY_OPTION_TEXT)) {
+    displayText[pageIndex] = json[DISPLAY_OPTION_TEXT].asString();
+  }
 }
 
 bool drawText(int pageIndex) {
@@ -92,9 +108,11 @@ bool drawConnectionStatus(int pageIndex) {
   }
   display->setFont(ArialMT_Plain_10);
   display->setTextAlignment(TEXT_ALIGN_LEFT);
-  display->drawStringMaxWidth(0, 0, 128, "Connecting to:");
-  display->drawStringMaxWidth(4, 12, 126, getMqttHost());
-  display->drawStringMaxWidth(0, 24, 128, "Attempt #" + String(getMqttFailedConnectionCounter()));
+
+  String message = "Connecting to: " + String(getMqttHost());
+  message += "; Attempt #" + String(getMqttFailedConnectionCounter());
+  display->drawStringMaxWidth(0, 0, 128, message);
+
   // Render the page
   return true;
 }
@@ -103,6 +121,13 @@ DisplayPage displayPages[] = {drawText, drawText, drawText, drawText, drawText,
   drawText, drawText, drawText, drawText, drawText, drawConnectionStatus};
 int pagesLength = (sizeof(displayPages) / sizeof(DisplayPage));
 long timeSinceLastModeSwitch = 0;
+
+String getDisplayCommand() {
+  if (isDisplayEnabled) {
+    return "display";
+  }
+  return "";
+}
 
 void handleDisplay() {
   display->clear();

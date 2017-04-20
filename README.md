@@ -1,5 +1,7 @@
 # Lamp ESP
 
+Note: Version 0.4 is work in progress. Please, check version 0.3 for stable version.
+
 Flexible modular non-blocking system for controlling ESP8266.
 You can reconfigure the system based on how you plug PINs.
 You can turn on/off modules which are not used.
@@ -107,6 +109,15 @@ Schema: http://www.esp8266learning.com/wemos-rgb-led-example.php
 ## Water Level Sensor
 
 Indicate whether water was dete/restartcted by sensor
+
+# Versions
+
+Master is under development. If you need stable api, please refer to branch.
+
+# Version 0.4
+
+MQTT messaging changed to commands compatible with IBM Bluemix:
+- https://developer.ibm.com/recipes/tutorials/sending-mqtt-commands-from-a-bluemix-app-to-a-device/
 
 # Version 0.3
 

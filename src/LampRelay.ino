@@ -28,6 +28,13 @@ int getRelay() {
   return digitalRead(relayPin);
 }
 
+String getRelayCommand() {
+  if (isRelayEnabled) {
+    return "relay";
+  }
+  return "";
+}
+
 void handleRelayOn() {
   setRelay(HIGH);
   handleRoot();

@@ -1,6 +1,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+int mqttModel = MQTT_MODEL_OPEN;
+
 // How many times connection to MQTT failed since last success
 unsigned int mqttFailedConnectionCounter = 0;
 
@@ -82,17 +84,39 @@ static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
 
 unsigned long waitForReconnectTime = 0;
 
+void publishStatus(char* json) {
+  if (mqttModel == MQTT_MODEL_BLUEMIX) {
+    mqttClient.publish("iot-2/evt/status/fmt/json", json);
+  }
+}
+
+void subscribeCommand(String command) {
+  if (command.length() == 0) {
+    return;
+  }
+  if (mqttModel == MQTT_MODEL_BLUEMIX) {
+    // TODO: make it ready for other commands
+    mqttClient.subscribe("iot-2/cmd/display/fmt/json");
+  }
+}
+
 void reconnect() {
 
   if (waitForReconnectTime < millis()) {
     Serial.print("Attempting MQTT connection...");
 
-    if (mqttClient.connect(getHostname())) {
+    // if (mqttClient.connect(getHostname())) {
+    if (mqttClient.connect(getHostname(), getMqttUsername(), getMqttPassword())) {
       Serial.println("connected");
-      mqttClient.publish(topicName("status"), "online");
-      mqttClient.subscribe(topicName("command"));
-      mqttClient.subscribe(topicName("display/+"));
-      mqttClient.subscribe(topic("info", "daylight"));
+      publishStatus("{\"d\":{\"value\":\"online\"}}");
+
+      // Subscribe only to topics which are relevant to enabled modules
+      subscribeCommand(getDisplayCommand());
+      subscribeCommand(getRelayCommand());
+      subscribeCommand(getLEDCommand());
+      subscribeCommand(getRGBLEDCommand());
+
+      //mqttClient.subscribe(topic("info", "daylight"));
       mqttFailedConnectionCounter = 0;
     } else {
       Serial.println("failed");
@@ -116,7 +140,8 @@ void sendMessage(const char* topic, const char* value) {
   mqttClient.publish(topicName(topic), value);
 }
 
-void setupMQTT() {
+void setupMQTT(int model) {
+  mqttModel = model;
   mqttClient.setServer(getMqttHost(), getMqttPort());
   mqttClient.setCallback(callback);
 }

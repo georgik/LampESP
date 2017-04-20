@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <TaskScheduler.h>
 
+#include "LampMQTT.h"
+
 Scheduler runner;
 
 void setup() {
@@ -11,7 +13,13 @@ void setup() {
   setupWifi(60);
   setupOTA();
   setupWebServer();
-  setupMQTT();
+
+  // Connect to MQTT using topic model:
+  // - MQTT_MODEL_OPEN - simple, permissive model with /parent/host/
+  // - MQTT_MODEL_BLUEMIX - compatible with IBM BlueMix
+  // - MQTT_MODEL_AZURE - compatible with Microsoft Azure
+  setupMQTT(MQTT_MODEL_BLUEMIX);
+  //setupMQTT(MQTT_MODEL_AZURE);
 
   // true - to enable functionality
   setupDisplay(true, D2, D8);

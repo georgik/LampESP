@@ -74,3 +74,10 @@ void handleRGBLEDCommand(String payload) {
     turnOffRGBLED();
   }
 }
+
+String getRGBLEDCommand() {
+  if (isRGBLEDEnabled) {
+    return "rgbled";
+  }
+  return "";
+}

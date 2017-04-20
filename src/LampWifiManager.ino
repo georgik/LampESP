@@ -2,8 +2,10 @@
 #include <FS.h>
 #include <WiFiManager.h>
 
-char configMqttHost[40];
+char configMqttHost[64];
 char configMqttPort[6];
+char configMqttUsername[16];
+char configMqttPassword[32];
 char configMqttParentTopic[40];
 char configDeviceHostname[40];
 char configTemperatureCorrection[6];
@@ -13,6 +15,8 @@ char configDHTInterval[6];
 
 const char *CFG_MQTT_HOST = "mqtt_host";
 const char *CFG_MQTT_PORT = "mqtt_port";
+const char *CFG_MQTT_USERNAME = "mqtt_username";
+const char *CFG_MQTT_PASSWORD = "mqtt_password";
 const char *CFG_MQTT_PARENT_TOPIC = "mqtt_parent_topic";
 const char *CFG_HOSTNAME = "hostname";
 const char *CFG_TEMPERATURE_CORRECTION = "temperature_correction";
@@ -48,6 +52,14 @@ int getMqttPort() {
   return String(configMqttPort).toInt();
 }
 
+const char* getMqttUsername() {
+  return configMqttUsername;
+}
+
+const char* getMqttPassword() {
+  return configMqttPassword;
+}
+
 float getTemperatureCorrection() {
   return String(configTemperatureCorrection).toFloat();
 }
@@ -74,6 +86,10 @@ void setConfigValue(String key, String value) {
     value.toCharArray(configMqttHost, valueLength);
   } else if (key == CFG_MQTT_PORT) {
     value.toCharArray(configMqttPort, valueLength);
+  } else if (key == CFG_MQTT_USERNAME) {
+    value.toCharArray(configMqttUsername, valueLength);
+  } else if (key == CFG_MQTT_PASSWORD) {
+    value.toCharArray(configMqttPassword, valueLength);
   } else if (key == CFG_MQTT_PARENT_TOPIC) {
     value.toCharArray(configMqttParentTopic, valueLength);
   } else if (key == CFG_HOSTNAME) {
@@ -87,17 +103,6 @@ void setConfigValue(String key, String value) {
   } else if (key == CFG_DHT_INTERVAL) {
     value.toCharArray(configDHTInterval, valueLength);
   }
-}
-
-void setDefaultConfig() {
-  strcpy(configMqttHost, "iot.sinusgear.com");
-  strcpy(configMqttPort, "1883");
-  strcpy(configMqttParentTopic, "home");
-  strcpy(configDeviceHostname, "esp8266");
-  strcpy(configTemperatureCorrection, "0");
-  strcpy(configPhotocellThreshold, "220");
-  strcpy(configPIRUpInterval, "30");
-  strcpy(configDHTInterval, "60");
 }
 
 void printMacAddress() {
@@ -152,6 +157,8 @@ void setupWifi(int portalConfigTimeout) {
 
           loadConfigValue(json, configMqttHost, CFG_MQTT_HOST);
           loadConfigValue(json, configMqttPort, CFG_MQTT_PORT);
+          loadConfigValue(json, configMqttUsername, CFG_MQTT_USERNAME);
+          loadConfigValue(json, configMqttPassword, CFG_MQTT_PASSWORD);
           loadConfigValue(json, configMqttParentTopic, CFG_MQTT_PARENT_TOPIC);
           loadConfigValue(json, configDeviceHostname, CFG_HOSTNAME);
           loadConfigValue(json, configTemperatureCorrection, CFG_TEMPERATURE_CORRECTION);
@@ -205,6 +212,8 @@ void saveConfig() {
   JsonObject& json = jsonBuffer.createObject();
   json[CFG_MQTT_HOST] = getMqttHost();
   json[CFG_MQTT_PORT] = getMqttPortAsString();
+  json[CFG_MQTT_USERNAME] = getMqttUsername();
+  json[CFG_MQTT_PASSWORD] = getMqttPassword();
   json[CFG_MQTT_PARENT_TOPIC] = getMqttParentTopic();
   json[CFG_HOSTNAME] = getHostname();
   json[CFG_TEMPERATURE_CORRECTION] = String(getTemperatureCorrection());
