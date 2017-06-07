@@ -137,7 +137,13 @@ void sendMessage(const char* topic, const char* value) {
   if(!mqttClient.connected()) {
     return;
   }
-  mqttClient.publish(topicName(topic), value);
+  if (mqttModel == MQTT_MODEL_BLUEMIX) {
+    static char buff[128];
+    sprintf(buff, "iot-2/evt/%s/fmt/text", topic);
+    mqttClient.publish(buff, value);
+  } else {
+    mqttClient.publish(topicName(topic), value);
+  }
 }
 
 void setupMQTT(int model) {
