@@ -18,14 +18,21 @@ void setRelay(int state) {
 
   digitalWrite(relayPin, state);
   if (state == LOW) {
-      mqttClient.publish(topicName("relay"), "off", true);
+    sendMessage("relay", "off");
   } else {
-    mqttClient.publish(topicName("relay"), "on", true);
+    sendMessage("relay", "on");
   }
 }
 
 int getRelay() {
   return digitalRead(relayPin);
+}
+
+void toggleRelay() {
+  if (!isRelayEnabled) {
+    return;
+  }
+  setRelay(!getRelay());
 }
 
 String getRelayCommand() {

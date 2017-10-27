@@ -95,8 +95,9 @@ void subscribeCommand(String command) {
     return;
   }
   if (mqttModel == MQTT_MODEL_BLUEMIX) {
-    // TODO: make it ready for other commands
-    mqttClient.subscribe("iot-2/cmd/display/fmt/json");
+    char buf[256];
+    sprintf(buf, "iot-2/cmd/%s/fmt/json", getMqttParentTopic());
+    mqttClient.subscribe(buf);
   }
 }
 

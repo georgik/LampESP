@@ -80,6 +80,10 @@ E.g.: `http://192.168.2.2/config?temperature_correction=-2`
 
 Read value from analog and send it to server.
 
+## Button
+
+Read button value and change state of the relay.
+
 ## Display
 
 Display value delivered to topic /+/+/display/number. E.g. temperature.

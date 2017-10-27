@@ -22,17 +22,30 @@ void setup() {
   //setupMQTT(MQTT_MODEL_AZURE);
 
   // true - to enable functionality
-  setupDisplay(true, D2, D8);
-  setupRelay(false, D1);
-  setupRGBLED(false, D2, D5, D3);
-  setupPhotocell(false, A0);
-  setupDHT(false, D4);
-  setupLED(false, D6);
-  setupPIR(false, D7);
 
+  // display module
+  //setupDisplay(true, D2, D8);
+
+  // relay module
+  setupRelay(true, D1);
+
+  setupButton(true, D3);
+
+  //setupRGBLED(false, D2, D5, D3);
+
+  // photocell module
+  /*
+  setupPhotocell(true, A0);
+  setupLED(true, D6);
+  setupPIR(true, D7);
+  */
+
+  setupDHT(true, D4);
+  /*
   // true - to enable functionality
   setupAirSensor(false, A0);
   setupWaterLevelSensor(false, D2);
+  */
 
   setupDeepSleep(false);
 }
