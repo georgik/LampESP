@@ -51,3 +51,36 @@ void handleRelayOff() {
   setRelay(LOW);
   handleRoot();
 }
+
+const char *RELAY_COMMAND = "command";
+
+void handleRelayCommand(String topic, String payload) {
+  if (!isRelayEnabled) {
+    return;
+  }
+
+  DynamicJsonBuffer jsonBuffer;
+  JsonObject& json = jsonBuffer.parseObject(payload);
+  if (!json.success()) {
+    Serial.println("LampRelay: Parsing JSON failed");
+    return;
+  }
+
+  String command = "";
+  if (json.containsKey(RELAY_COMMAND)) {
+    command = json[RELAY_COMMAND].asString();
+  }
+
+  if (command == "on") {
+    setRelay(HIGH);
+  } else if (command == "off") {
+    setRelay(LOW);
+  } else if (command == "toggle") {
+    if (getRelay() == HIGH) {
+      setRelay(LOW);
+    } else {
+      setRelay(HIGH);
+    }
+  }
+
+}

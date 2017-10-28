@@ -60,18 +60,8 @@ static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
       isDayligh = false;
       // turnOnPIR();
     }
-  } else if (topic.endsWith("command")) {
-    if (payload == "on") {
-      setRelay(HIGH);
-    } else if (payload == "off") {
-      setRelay(LOW);
-    } else if (payload == "toggle") {
-      if (getRelay() == HIGH) {
-        setRelay(LOW);
-      } else {
-        setRelay(HIGH);
-      }
-    }
+  } else if (topic.indexOf("relay") != -1) {
+    handleRelayCommand(topic, payload);
 
     handleRGBLEDCommand(payload);
 
@@ -95,8 +85,13 @@ void subscribeCommand(String command) {
     return;
   }
   if (mqttModel == MQTT_MODEL_BLUEMIX) {
+    char commandBuffer[256];
     char buf[256];
-    sprintf(buf, "iot-2/cmd/%s/fmt/json", getMqttParentTopic());
+
+    command.toCharArray(commandBuffer, command.length() + 1);
+    sprintf(buf, "iot-2/cmd/%s/fmt/json", commandBuffer);
+    Serial.print("MQTT Subscription: ");
+    Serial.println(buf);
     mqttClient.subscribe(buf);
   }
 }
