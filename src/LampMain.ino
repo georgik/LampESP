@@ -24,12 +24,12 @@ void setup() {
   // true - to enable functionality
 
   // display module
-  //setupDisplay(true, D2, D8);
+  setupDisplay(true, D2, D8);
 
   // relay module
-  setupRelay(true, D1);
+  //setupRelay(true, D1);
 
-  setupButton(true, D3);
+  //setupButton(true, D3);
 
   //setupRGBLED(false, D2, D5, D3);
 
@@ -40,12 +40,19 @@ void setup() {
   setupPIR(true, D7);
   */
 
-  setupDHT(true, D4);
+  //setupDHT(true, D4);
   /*
   // true - to enable functionality
   setupAirSensor(false, A0);
   setupWaterLevelSensor(false, D2);
   */
+
+  /*
+   Preconfigured - device measure + relay
+   setupRelay(true, D1);
+   setupButton(true, D3);
+   setupDHT(true, D4);
+   */
 
   setupDeepSleep(false);
 }

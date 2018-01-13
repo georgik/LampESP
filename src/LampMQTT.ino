@@ -117,6 +117,12 @@ void reconnect() {
     } else {
       Serial.println("failed");
       mqttFailedConnectionCounter++;
+
+      // Some AP are not talking correctly to ESP and it could loose MQTT connection
+      // and the ESP is not able to restore it. Restart the device after 30 attempts.
+      if (mqttFailedConnectionCounter == 30) {
+        ESP.reset();
+      }
     }
     // Any retry should occure in 5 seconds
     waitForReconnectTime = millis() + 5000;
