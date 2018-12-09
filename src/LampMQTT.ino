@@ -2,6 +2,7 @@
 #include <PubSubClient.h>
 
 int mqttModel = MQTT_MODEL_OPEN;
+bool isMqttEnabled = false;
 
 // How many times connection to MQTT failed since last success
 unsigned int mqttFailedConnectionCounter = 0;
@@ -75,12 +76,18 @@ static void callback(char* topicChar, byte* payloadByte, unsigned int length) {
 unsigned long waitForReconnectTime = 0;
 
 void publishStatus(char* json) {
+  if (!isMqttEnabled) {
+    return;
+  }
   if (mqttModel == MQTT_MODEL_BLUEMIX) {
     mqttClient.publish("iot-2/evt/status/fmt/json", json);
   }
 }
 
 void subscribeCommand(String command) {
+  if (!isMqttEnabled) {
+    return;
+  }
   if (command.length() == 0) {
     return;
   }
@@ -130,13 +137,19 @@ void reconnect() {
 }
 
 void sendMessage(const char* topic, float value) {
+  if (!isMqttEnabled) {
+    return;
+  }
   static char buff[16];
   String(value).toCharArray(buff, 15);
   sendMessage(topic, buff);
 }
 
 void sendMessage(const char* topic, const char* value) {
-  if(!mqttClient.connected()) {
+  if (!isMqttEnabled) {
+    return;
+  }
+  if (!mqttClient.connected()) {
     return;
   }
   if (mqttModel == MQTT_MODEL_BLUEMIX) {
@@ -149,16 +162,23 @@ void sendMessage(const char* topic, const char* value) {
 }
 
 void setupMQTT(int model) {
+  isMqttEnabled = true;
   mqttModel = model;
   mqttClient.setServer(getMqttHost(), getMqttPort());
   mqttClient.setCallback(callback);
 }
 
 void handleMQTT() {
+  if (!isMqttEnabled) {
+    return;
+  }
   mqttClient.loop();
 }
 
 void checkMQTTConnection() {
+  if (!isMqttEnabled) {
+    return;
+  }
   if (!mqttClient.connected()) {
     reconnect();
   }
