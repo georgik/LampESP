@@ -128,12 +128,7 @@ void loadConfigValue(ArduinoJson::JsonObject& json, char* targetVar, String keyN
   }
 }
 
-void setupWifi(int portalConfigTimeout) {
-
-  printMacAddress();
-
-  WiFi.mode(WIFI_STA); // Force to station mode because if device was switched off while in access point mode it will start up next time in access point mode.
-
+void loadConfiguration() {
   Serial.println("mounting FS...");
 
   if (SPIFFS.begin()) {
@@ -175,6 +170,16 @@ void setupWifi(int portalConfigTimeout) {
     Serial.println("failed to mount FS");
   }
   //end read
+
+}
+
+void setupWifi(int portalConfigTimeout) {
+
+  printMacAddress();
+
+  WiFi.mode(WIFI_STA); // Force to station mode because if device was switched off while in access point mode it will start up next time in access point mode.
+
+  loadConfiguration();
 
   // id/name, placeholder/prompt, default, length
   WiFiManagerParameter custom_mqtt_host(CFG_MQTT_HOST, "MQTT host", configMqttHost, 40);
